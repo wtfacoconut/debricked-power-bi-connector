@@ -1,0 +1,5904 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "Debricked API Documentation",
+    "contact": {}
+  },
+  "host": "debricked.com",
+  "basePath": "/api/1.0/open/",
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "description": "The token you get from: \"curl -X POST https://debricked.com/api/login_check -d _username=YOUR_USERNAME -d _password=YOUR_PASSWORD\", prefixed with \"Bearer\". Example value: \"Bearer YOUR_VERY_LONG_TOKEN\"",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/files/supported-formats": {
+      "get": {
+        "description": "",
+        "summary": "Get supported dependency file formats",
+        "tags": [
+          "Dependency files management"
+        ],
+        "operationId": "list-supported-dependency-file-formats",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/ci/upload/status": {
+      "get": {
+        "description": "",
+        "summary": "Get current status of a CI upload. An array consisting of progress and amount of vulnerabilities found (as well as the number of vulnerabilities marked as unaffected) is returned.",
+        "tags": [
+          "Dependency files management",
+          "Vulnerability management"
+        ],
+        "operationId": "get-ci-upload-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ciUploadId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          },
+          {
+            "name": "extendedOutput",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "If true, returns an extended output containing stats for each file. When scan is complete, the result can only be fetched once per hour with this option enabled."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful and scan is completed.",
+            "headers": {}
+          },
+          "201": {
+            "description": "Returned when queue times are long and the scan is not completed.",
+            "headers": {}
+          },
+          "202": {
+            "description": "Returned when scan is in progress.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "403": {
+            "description": "Returned when you don't have access to one or more uploads/files.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when given upload doesn't exist.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/sbom/download-generated-cyclonedx-sbom": {
+      "get": {
+        "description": "",
+        "summary": "Download result of generated CycloneDX SBOM, or get a status response is not yet complete",
+        "tags": [
+          "CycloneDX SBOM"
+        ],
+        "operationId": "download-generated-cyclonedx-sbom",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "reportUuid",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".*",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when complete. Response contains a JSON-encoded SBOM with requested data populated matching all its components.",
+            "headers": {}
+          },
+          "202": {
+            "description": "Returned when not complete.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "403": {
+            "description": "Returned when you do not have access to current operation",
+            "headers": {}
+          },
+          "410": {
+            "description": "This response is sent when the requested content has been permanently deleted from server, with no forwarding address.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/admin/users": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your users.",
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "list-users",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by email or name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "email",
+              "firstName",
+              "lastName",
+              "userStatus",
+              "userRoles"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "showInvites",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "(1)|(0)",
+            "description": "Whether user invites should also be returned"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful, a JSON encoded array consisting of user data.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/admin/user/options": {
+      "get": {
+        "description": "",
+        "summary": "Get list of options which can be used when adding/editing users.",
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "list-admin-user-options",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful, a JSON encoded array consisting of user options.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/admin/user/default-rules-enabled": {
+      "get": {
+        "description": "",
+        "summary": "Get settings `default rules enabled`",
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "list-settings-default-rules-enabled",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns value of settings `default rules enabled`.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      },
+      "patch": {
+        "description": "",
+        "summary": "Edit value `default rules enabled` for the current user.",
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "Editvalue`defaultrulesenabled`forthecurrentuser.",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "enum": [
+              "application/json"
+            ],
+            "type": "string",
+            "description": ""
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": false,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/AdminUserDefaultRulesEnabledRequest"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Returned when successfully edited user.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/admin/request-logs/get-request-logs": {
+      "get": {
+        "description": "",
+        "summary": "Filter and get the request logs in a paginated fashion. Non-admins will only be able to access their own logs.",
+        "tags": [
+          "Admin",
+          "Request logging"
+        ],
+        "operationId": "get-request-logs",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventTypeId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Filter by eventTypeId"
+          },
+          {
+            "name": "userEmail",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Filter by user email"
+          },
+          {
+            "name": "url",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Filter by a specific url"
+          },
+          {
+            "name": "ipAddress",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Filter by a specific IP address"
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2})?(\\+\\d{2}:\\d{2})?",
+            "description": "Starting timestamp to fetch logs, e.g. 2018-05-10T15:52:01"
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "\\d{4}-\\d{2}-\\d{2}(T\\d{2}:\\d{2}:\\d{2})?(\\+\\d{2}:\\d{2})?",
+            "description": "Ending timestamp to fetch logs, e.g. 2021-05-10T15:52:01"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Page number for paginated content"
+          },
+          {
+            "name": "pageSize",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of logs to return per page, maximum 50"
+          },
+          {
+            "name": "excludeUnclassified",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "Setting this parameter to true excludes the logs which do not have an associated labeled event"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the logs",
+            "schema": {
+              "$ref": "#/definitions/AdminRequestLogsGetRequestLogsResponse"
+            },
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when user is not found",
+            "headers": {}
+          },
+          "403": {
+            "description": "Returned when attempted to access other users' logs while not being an admin",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/admin/request-logs/get-events": {
+      "get": {
+        "description": "",
+        "summary": "Get event names and ids",
+        "tags": [
+          "Admin",
+          "Request logging"
+        ],
+        "operationId": "get-events",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the events",
+            "schema": {
+              "type": "array",
+              "default": "",
+              "items": {
+                "$ref": "#/definitions/AdminRequestLogsGetEventsResponse"
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user-permissions/": {
+      "get": {
+        "description": "",
+        "summary": "Get the current user permissions configuration",
+        "tags": [
+          "Admin",
+          "User permissions"
+        ],
+        "operationId": "get-current-user-permissions-configuration",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the user permissions",
+            "schema": {
+              "$ref": "#/definitions/UserPermissionsResponse"
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    
+    
+    "/repository-settings/repositories": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your repositories, their use cases, number of automations and more.",
+        "tags": [
+          "Repository settings"
+        ],
+        "operationId": "list-repositories",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by name or commit"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "name",
+              "automations",
+              "useCase",
+              "integration",
+              "scanningEnabled",
+              "showHardwareDependencies"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort result by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Sorting order, asc or desc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository-settings/commits": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your commits.",
+        "tags": [
+          "Repository settings"
+        ],
+        "operationId": "list-repository-commit-settings",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by name or repository"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "name",
+              "commitDate",
+              "repository",
+              "branch",
+              "author"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort result by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Sorting order, asc or desc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },   
+    
+    "/repository-settings/available-use-cases": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of all available use cases and their IDs.",
+        "tags": [
+          "Repository settings"
+        ],
+        "operationId": "list-use-cases",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful",
+            "schema": {
+              "type": "array",
+              "default": "",
+              "items": {
+                "$ref": "#/definitions/RepositorySettingsAvailableUseCasesResponse"
+              }
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository-settings/{commitId}/cpes": {
+      "get": {
+        "description": "",
+        "summary": "Lists all cpes from a specific commit.",
+        "tags": [
+          "Repository settings"
+        ],
+        "operationId": "list-commit-cpes",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commitId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Id of the commit"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search by vendor or product"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "part",
+              "vendor",
+              "product",
+              "version",
+              "update",
+              "cpeId"
+            ],
+            "type": "string",
+            "description": "Which column to sort result by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/repository-settings/repositories/{repositoryId}/enable-app-scanning/{enableScanning}": {
+      "patch": {
+        "description": "",
+        "summary": "Enable/disable GitHub App dependency scanning.",
+        "tags": [
+          "Repository settings"
+        ],
+        "operationId": "Enable/disableGitHubAppdependencyscanning.",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Id of repository to change GitHub App scanning status for"
+          },
+          {
+            "name": "enableScanning",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Enable/disable app scanning. 1 to enable, 0 to disable"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "403": {
+            "description": "Returned when you do not have access to current operation",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/scan/scan-status": {
+      "get": {
+        "description": "",
+        "summary": "Get the scan status of your repositories.",
+        "tags": [
+          "Scan"
+        ],
+        "operationId": "list-repositories-statuses",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryIds",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "^\\d[,\\d]*$",
+            "description": "The ids of the repositories that should be checked, seperated by comma, leave empty to return all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Specify which commitId to check for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful, a JSON encoded array consisting of repository information.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/scan/latest-scan-status": {
+      "get": {
+        "description": "",
+        "summary": "Get the status of your latest scan.",
+        "tags": [
+          "Scan"
+        ],
+        "operationId": "get-last-scan-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryIds",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "^\\d[,\\d]*$",
+            "description": "The ids of the repositories that should be checked, seperated by comma, leave empty to return all."
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Specify which commitId to check for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful, a JSON encoded array consisting of repository information.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/scan/remaining-scans": {
+      "get": {
+        "description": "",
+        "summary": "Get the data for remaining scans.",
+        "tags": [
+          "Scan"
+        ],
+        "operationId": "list-remaining-scans",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful, a JSON encoded object remaining scans data.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repositories/get-repositories": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your repositories and an overview of their vulnerabilities",
+        "tags": [
+          "Repositories"
+        ],
+        "operationId": "list-repositories-vulnerability-overviews",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Search by repository name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "name",
+              "totalVulnerabilities",
+              "vulnerabilitiesWithExploits"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Group ID to select from"
+          },
+          {
+            "name": "generateExcel",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Generate excel report"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The email address of the recipient of the finished report. If not set the email of the current authorized user will be used"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the repositories",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repositories/get-repositories-names-links": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your repositories and id",
+        "tags": [
+          "Repositories"
+        ],
+        "operationId": "list-repositories-names-links",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the repositories",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repositories/get-repositories-names-links-excluding-manual-uploads": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your integrated repositories and id, excluding manual uploads (uploads done in UI). If there is no integrated repos, amount of manual uploads are returned.",
+        "tags": [
+          "Repositories"
+        ],
+        "operationId": "list-integrated-repositories-or-manual-uploads",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the repositories",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repositories/get-by-groups": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of repository ids by groups ids",
+        "tags": [
+          "Repositories"
+        ],
+        "operationId": "list-repository-ids-by-groups",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "groupIds",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The ids of the groups that should be checked, seperated by comma, leave empty to return all."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the repositories by groups ids",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository/{repositoryId}/set-default-branch": {
+      "get": {
+        "description": "",
+        "summary": "Set the provided branch as default for a given repository",
+        "tags": [
+          "Repository"
+        ],
+        "operationId": "set-repository-default-branch",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the new default branch to set"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully changed default branch",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository/{repositoryId}/branch/{branchId}/get-pr-status": {
+      "get": {
+        "description": "",
+        "summary": "Get the pull request status of a repository and branch",
+        "tags": [
+          "Repository"
+        ],
+        "operationId": "get-pull-request-status-of-repository-and-branch",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          },
+          {
+            "name": "branchId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository/{repositoryId}/branch/{branchId}/get-pr-progress": {
+      "get": {
+        "description": "",
+        "summary": "Get the pull request progress of a repository and branch",
+        "tags": [
+          "Repository"
+        ],
+        "operationId": "get-pull-request-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          },
+          {
+            "name": "branchId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    
+    "/repository/{repositoryId}/get-branches": {
+      "get": {
+        "description": "",
+        "summary": "Get the avaiable branches for a repository",
+        "tags": [
+          "Repository"
+        ],
+        "operationId": "list-available-repository-branches",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository/{repositoryId}/pull-request-availability": {
+      "get": {
+        "description": "",
+        "summary": "Get info about PR availability",
+        "tags": [
+          "Repository"
+        ],
+        "operationId": "get-pull-request-availability",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/commits/get-commits": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your commits",
+        "tags": [
+          "Commits"
+        ],
+        "operationId": "list-commits",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by commit name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "name",
+              "releaseDate",
+              "totalVulnerabilities",
+              "vulnerabilitiesWithExploits",
+              "author"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of the repository in question"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the commits",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/releases/by/name": {
+      "get": {
+        "description": "",
+        "summary": "Get info about releases with the given name.",
+        "tags": [
+          "Commits"
+        ],
+        "operationId": "list-releases-by-name",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "The name of the release(s) you want to get info of"
+          },
+          {
+            "name": "productId",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": "(Optional) The product which the release(s) belong to."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependencies/get-dependencies-hierarchy": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your dependencies",
+        "tags": [
+          "Dependencies"
+        ],
+        "operationId": "list-dependencies-hierarchy",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search by dependency name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "name",
+              "totalVulnerabilities",
+              "licenses"
+            ],
+            "type": "string",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired repository"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired commit"
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired group. Overrides commitId and repositoryId if specified."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the dependencies",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/": {
+      "get": {
+        "description": "",
+        "summary": "Get dependency information",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-details",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired dependency"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Get repository specific data of the dependency"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Get commit specific data of the dependency"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/license-data": {
+      "get": {
+        "description": "",
+        "summary": "Get dependency license data",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-license-details",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository to get license data of the dependency"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch to select, if non provided will use all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit to select, if selected, repository and branch will be ignored"
+          },
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/versions": {
+      "get": {
+        "description": "",
+        "summary": "Get dependency versions",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-versions",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository to get the versions of the dependency"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch to select, if non provided will use all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit to select, if selected, repository and branch will be ignored"
+          },
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/hierarchy-status": {
+      "get": {
+        "description": "",
+        "summary": "Returns whether the dependency is direct, indirect or both in the context of the repository",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-hierarchy",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository to get license data of the dependency"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch to select, if non provided will use all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit to select, if selected, repository and branch will be ignored"
+          },
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/repositories-and-branches": {
+      "get": {
+        "description": "",
+        "summary": "Returns the repositories and branches which contain this dependency",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "list-repositories-containing-dependency",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/vulnerable-files": {
+      "get": {
+        "description": "",
+        "summary": "Get the files containing a vulnerable version of this repository",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "list-repository-vulnerable-files",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository containing the files with the dependency"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch to select, if non provided will use all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit to select, if selected, repository and branch will be ignored"
+          },
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/dependency/{dependencyId}/dependency-trees": {
+      "get": {
+        "description": "",
+        "summary": "Get the dependency trees for a given vulnerable dependency contained in a file",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "list-vulnerable-dependency-dependency-trees",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository containing the files with the dependency"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch to select, if non provided will use all"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit to select, if selected, repository and branch will be ignored"
+          },
+          {
+            "name": "fileId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "File containing the vulnerable dependency"
+          },
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/select-data/dependency-data/{dependencyId}": {
+      "get": {
+        "description": "",
+        "summary": "Get open source select data relevant to the dependency",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-open-source-select-details",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/select-data/dependency-metrics/{dependencyId}": {
+      "get": {
+        "description": "",
+        "summary": "Get open source select metrics relevant to the dependency",
+        "tags": [
+          "Dependency"
+        ],
+        "operationId": "get-dependency-open-source-select-metrics",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "dependencyId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "pattern": "\\d+",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when dependency is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerabilities/get-vulnerabilities": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your vulnerabilities",
+        "tags": [
+          "Vulnerabilities"
+        ],
+        "operationId": "list-vulnerabilities",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by vulnerability name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "name",
+              "discovered",
+              "cvss"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired repository"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          },
+          {
+            "name": "dependencyId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired dependency"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired commit"
+          },
+          {
+            "name": "group",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired group"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the vulnerabilities",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/cvesummary": {
+      "get": {
+        "description": "",
+        "summary": "Get a risk summary of a CVE.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-cve-summary",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/cvssdetails": {
+      "get": {
+        "description": "",
+        "summary": "Get the CVSS details for a specific CVE.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-cvss-score",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/refsummary": {
+      "get": {
+        "description": "",
+        "summary": "Get summaries from sources, including CWE, for a vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-reference-summary",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/review-status": {
+      "get": {
+        "description": "",
+        "summary": "Get review status for a vulnerability for all repositories.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-review-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID. If specified, comment when setting status for this vulnerability and repository will be returned"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the review status",
+            "schema": {
+              "$ref": "#/definitions/VulnerabilityReviewStatusResponse"
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/vulnerability/{vulnerabilityId}/pause-status": {
+      "get": {
+        "description": "",
+        "summary": "Get pause and snooze status. If pause status is empty it is enabled",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-pause-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when not authorized",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/cveid": {
+      "get": {
+        "description": "",
+        "summary": "Get the CVE ID from a vulnerability ID.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-cve-id",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/tags": {
+      "get": {
+        "description": "",
+        "summary": "Get the related tags for a vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-related-tags",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/dates": {
+      "get": {
+        "description": "Here, we can switch between using the vulnDB or not (isDatabase). If true, we return data from\ne.g. NVD such as published date and updated date. If false, we return the date at which the\nvulnerability was discovered by us in the repo.",
+        "summary": "Get the relevant dates for a vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-dates",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "isDatabase",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "Use vulnerability database. If false, it returns the date at which the vulnerability was found in the repo. If true, it returns the published/updated data from e.g., NVD"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/references": {
+      "get": {
+        "description": "",
+        "summary": "Get the relevant references for a vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-references",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the remediation status",
+            "schema": {
+              "$ref": "#/definitions/VulnerabilityReferencesResponse"
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/affected-dependencies": {
+      "get": {
+        "description": "",
+        "summary": "Get the affected dependencies for a vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-affected-dependencies",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "isDatabase",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "Use vulnerability database. If false, it returns the date at which the vulnerability was found in the repo. If true, it returns the published/updated data from e.g., NVD"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Branch ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/vulnerable-timeline": {
+      "get": {
+        "description": "",
+        "summary": "Returns vulnerable status for each versions of the affected dependencies in a timeline fashion",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-status-timeline",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID. When specified it will narrow down only to dependencies present in the repository"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched the vulnerable timeline",
+            "schema": {
+              "$ref": "#/definitions/VulnerabilityTimelinesModel"
+            },
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/files/{fileId}/dependency-tree": {
+      "get": {
+        "description": "",
+        "summary": "Get the dependency tree for a given vulnerability and file present in a repository. Other than the required parameters, either repositoryId or commitId has to be set",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-file-dependency-tree",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "fileId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "File ID."
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "204": {
+            "description": "No trees for given parameters.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "500": {
+            "description": "Returned if unexpected error occured",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/files": {
+      "get": {
+        "description": "",
+        "summary": "Get information about the files affected by the vulnerability. Other than the required paramteres, either reposiotoryId or commitId has to be set.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-files",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID, to fetch information only from a specified repository"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID, to fetch information only from a specified commit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched files",
+            "schema": {
+              "type": "array",
+              "default": "",
+              "items": {
+                "$ref": "#/definitions/DependencyFile"
+              }
+            },
+            "headers": {}
+          },
+          "204": {
+            "description": "No vulnerable files for given parameters.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/repository-information": {
+      "get": {
+        "description": "Information includes: examined status, name of repo, link.",
+        "summary": "Get information about the repositories affected by the vulnerability.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-repository-information",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID, to fetch information only from a specified repository"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/activity/{repositoryId}": {
+      "get": {
+        "description": "",
+        "summary": "Retrieve all activity related to the vulnerability in the repository.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "list-vulnerability-repository-activities",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/repository/{repositoryId}/commit/{commitId}/pull-request/status": {
+      "get": {
+        "description": "",
+        "summary": "Get pull request status.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-repository-commit-pull-request-status",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "commitId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          },
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/repository/{repositoryId}/commit/{commitId}/pull-request/progress": {
+      "get": {
+        "description": "",
+        "summary": "Get pull request progress info.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-repository-commit-pull-request-progress",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "commitId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          },
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+      
+    "/vulnerability/{vulnerabilityId}/pullrequest/{commitId}/receiptdata": {
+      "get": {
+        "description": "",
+        "summary": "Get pull request receipt data.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-pull-request-commit-receipt-data",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "commitId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          },
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vulnerability ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/vulnerability/{vulnerabilityId}/repositories/{repositoryId}/root-fixes": {
+      "get": {
+        "description": "",
+        "summary": "Get root fixes for concrete vulnerability for all files in the repository that are vulnerable.",
+        "tags": [
+          "Vulnerability"
+        ],
+        "operationId": "get-vulnerability-repository-root-fixes",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID."
+          },
+          {
+            "name": "vulnerabilityId",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int32",
+            "description": "Vunerability ID."
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Commit ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository-groups/": {
+      "get": {
+        "description": "",
+        "summary": "Get all the owned groups",
+        "tags": [
+          "Repository groups"
+        ],
+        "operationId": "get-owned-repository-groups",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the groups",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository-groups/get-current-groups": {
+      "get": {
+        "description": "",
+        "summary": "Get information about the sub-groups contained in the current group",
+        "tags": [
+          "Repository groups"
+        ],
+        "operationId": "list-repository-groups-current-groups",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "ID of the current group, defaults to '/' which is the root level"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the subgroups",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when the current group is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/repository-groups/get-repositories": {
+      "get": {
+        "description": "",
+        "summary": "Get repositories contained in a group",
+        "tags": [
+          "Repository groups"
+        ],
+        "operationId": "list-repository-groups-repositories",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "current",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "ID of the desired current group"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the repositories under a group",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when the current group is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+      
+      
+      
+    "/access-tokens/": {
+      "get": {
+        "description": "",
+        "summary": "Get a paginated list of your company's access tokens",
+        "tags": [
+          "Access tokens"
+        ],
+        "operationId": "list-access-tokens",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "Search by access token description"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": false,
+            "enum": [
+              "description",
+              "created",
+              "accessScopes"
+            ],
+            "type": "string",
+            "pattern": ".+",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched list",
+            "schema": {
+              "$ref": "#/definitions/AccessTokensResponse"
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/automations/rules-count": {
+      "get": {
+        "description": "",
+        "summary": "Get a count of your automations rules",
+        "tags": [
+          "Automations"
+        ],
+        "operationId": "get-automation-rules-count",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryIds",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The ids of the repositories that should be checked, seperated by comma, leave empty to return all"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully calculated the count of rules",
+            "schema": {
+              "$ref": "#/definitions/AutomationsRulesCountResponse"
+            },
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when repository is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    
+    "/user-profile/is-admin": {
+      "get": {
+        "description": "",
+        "summary": "Checks whether user is an admin or not",
+        "tags": [
+          "User profile"
+        ],
+        "operationId": "check-if-user-is-admin",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/user-profile/get-user-info": {
+      "get": {
+        "description": "",
+        "summary": "Returns full user name, email and billing plan",
+        "tags": [
+          "User profile"
+        ],
+        "operationId": "get-user-profile-information",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/licenses/get-licenses": {
+      "get": {
+        "description": "",
+        "summary": "Get a list of your licenses",
+        "tags": [
+          "Licenses"
+        ],
+        "operationId": "list-licenses",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search by name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "name",
+              "repositories",
+              "dependenciesCount",
+              "licenseFamily"
+            ],
+            "type": "string",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired repository"
+          },
+          {
+            "name": "repositoryIds",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The ids of the repositories that should be checked, seperated by comma, leave empty to return all"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired branch"
+          },
+          {
+            "name": "commitId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The ID of a specific desired commit"
+          },
+          {
+            "name": "generateExcel",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Generate excel report"
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "The email address of the recipient of the finished report. If not set the email of the current authorized user will be used"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the licenses",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/license/{licenseId}/": {
+      "get": {
+        "description": "",
+        "summary": "Get information about a specific license and related repositories",
+        "tags": [
+          "License"
+        ],
+        "operationId": "get-license",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "default": 1,
+            "type": "integer",
+            "format": "int32",
+            "description": "Which page to show results for, starting at 1"
+          },
+          {
+            "name": "rowsPerPage",
+            "in": "query",
+            "required": false,
+            "default": 25,
+            "type": "integer",
+            "format": "int32",
+            "description": "Amount of rows per page"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "description": "Search by repository name"
+          },
+          {
+            "name": "sortColumn",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "name",
+              "licenseRisk",
+              "dependencyCount"
+            ],
+            "type": "string",
+            "description": "Which column to sort results by"
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "required": true,
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "type": "string",
+            "description": "Sorting order, asc or desc"
+          },
+          {
+            "name": "licenseId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the results",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when license is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/license/{licenseId}/get-repository-ids": {
+      "get": {
+        "description": "",
+        "summary": "Get information about a specific license repository ids",
+        "tags": [
+          "License"
+        ],
+        "operationId": "list-license-repositories",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "licenseId",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successfully fetched all the results",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "404": {
+            "description": "Returned when license is not found",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/overview/snapshots": {
+      "get": {
+        "description": "",
+        "summary": "Gets the snapshots in the last timeFrame nr of timeScale, for instance the last 3 days, or in the last 5 months etc.",
+        "tags": [
+          "Overview"
+        ],
+        "operationId": "list-snapshots",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID. If empty will check all repositories."
+          },
+          {
+            "name": "timeFrame",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of timeScales back to search"
+          },
+          {
+            "name": "timeScale",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "The scale to search backwards for"
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The id of the branch to check. If empty will check the default branch"
+          },
+          {
+            "name": "excludeManualUploads",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "The id of the branch to check. If empty will check the default branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/overview/vulnerabilities-fixed": {
+      "get": {
+        "description": "",
+        "summary": "Gets the number of vulnerabilities fixed for the selected time period",
+        "tags": [
+          "Overview"
+        ],
+        "operationId": "get-overview-vulnerabilities-fixed",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID. If empty, all repositories will be checked."
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The id of the branch to check. If empty, the latest commit on the default branch will be checked"
+          },
+          {
+            "name": "timeFrame",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of timeScales back to search"
+          },
+          {
+            "name": "timeScale",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "pattern": ".+",
+            "description": "The scale to search backwards for"
+          },
+          {
+            "name": "excludeManualUploads",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "The id of the branch to check. If empty will check the default branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    },
+    "/overview/license-risks": {
+      "get": {
+        "description": "",
+        "summary": "Gets the current numbers of license risks.",
+        "tags": [
+          "Overview"
+        ],
+        "operationId": "get-overview-license-risk",
+        "deprecated": false,
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "repositoryId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "Repository ID. If empty, all repositories will be checked."
+          },
+          {
+            "name": "branchId",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "description": "The id of the branch to check. If empty, the latest commit on the default branch will be checked"
+          },
+          {
+            "name": "excludeManualUploads",
+            "in": "query",
+            "required": false,
+            "type": "boolean",
+            "description": "The id of the branch to check. If empty will check the default branch"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returned when successful.",
+            "headers": {}
+          },
+          "400": {
+            "description": "Returned when required data is missing. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          },
+          "401": {
+            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
+            "headers": {}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "GenerateCycloneSbomRequest": {
+      "title": "GenerateCycloneSbomRequest",
+      "type": "object",
+      "properties": {
+        "commitId": {
+          "description": "CommitId of a repository to extract data from. Note that if this value is provided, the values for repositoryIds and branch will be ignored.",
+          "type": "integer",
+          "default": 0,
+          "format": "int32"
+        },
+        "email": {
+          "description": "The email address of the recipient of the finished report. If not set the email of the current authorized user will be used.",
+          "type": "string"
+        },
+        "repositoryIds": {
+          "description": "RepositoryIds to extract data, default branch will be chosen for all of them.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "branch": {
+          "description": "Branch name to select when using a repositoryId",
+          "type": "string",
+          "default": "master"
+        },
+        "locale": {
+          "description": "The language of the email message, en/sv. Note that the SBOM will always be generated in English.",
+          "type": "string",
+          "default": "en"
+        },
+        "vulnerabilities": {
+          "description": "Add vulnerabilities matching the components in the SBOM."
+        },
+        "rootFixes": {
+          "description": "Add root fixes information to matching vulnerabilities. By default it is true if vulnerabilities is true"
+        },
+        "licenses": {
+          "description": "Add license data for the components in the SBOM."
+        },
+        "sendEmail": {
+          "description": "Send email with SBOM report. When set to false, make sure to download the SBOM through download-generated-cyclonedx-sbom endpoint."
+        },
+        "vulnerabilityStatuses": {
+          "description": "Vulnerabilitis only in selected statuses will be added to report. If empty, only 'vulnerable', 'unexamined', 'paused', 'snoozed' will be included.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VulnerabilityStatus"
+          }
+        }
+      }
+    },
+    "InviteUsersCommand": {
+      "title": "InviteUsersCommand",
+      "type": "object",
+      "properties": {
+        "emails": {
+          "description": "List of emails to send out emails",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "roles": {
+          "description": "The role IDs which will be assigned to the users",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "user_group": {
+          "description": "The user group ID which will be assigned to the users",
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "required": [
+        "user_group"
+      ]
+    },
+    "EditUserType": {
+      "title": "EditUserType",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "userGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "cachedRolesAsObjects": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plainPassword": {
+          "type": "string",
+          "format": "password"
+        }
+      },
+      "required": [
+        "email",
+        "firstName",
+        "lastName",
+        "isActive",
+        "userGroups",
+        "cachedRolesAsObjects",
+        "plainPassword"
+      ]
+    },
+    "TemporaryEnterpriseSSORequest": {
+      "title": "TemporaryEnterpriseSSORequest",
+      "type": "object",
+      "properties": {
+        "providerUrl": {
+          "type": "string"
+        },
+        "clientId": {
+          "type": "string"
+        },
+        "clientSecret": {
+          "type": "string"
+        },
+        "emailDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "providerUrl",
+        "clientId",
+        "clientSecret",
+        "emailDomains"
+      ]
+    },
+    "RequestLogSample": {
+      "title": "RequestLogSample",
+      "type": "object",
+      "properties": {
+        "user": {
+          "description": "Email of user",
+          "example": "tony.montana@debricked.com",
+          "type": "string"
+        },
+        "event_name": {
+          "description": "Name of the event",
+          "example": "Created pull request",
+          "type": "string"
+        },
+        "event_id": {
+          "description": "ID of the event",
+          "example": 2,
+          "type": "integer",
+          "format": "int32"
+        },
+        "ip_address": {
+          "description": "IP address associated with the request",
+          "example": "56.139.181.204",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "Timestamp of the request",
+          "example": "2021-11-06 19:45:14",
+          "type": "string"
+        },
+        "method": {
+          "description": "Method used for the request",
+          "example": "GET",
+          "type": "string"
+        },
+        "status_code": {
+          "description": "Response status code",
+          "example": 200,
+          "type": "integer",
+          "format": "int32"
+        },
+        "breadcrumbs": {
+          "description": "Information about the pages the user visted in the UI",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Breadcrumb"
+          }
+        },
+        "url": {
+          "description": "Url of the request",
+          "example": "https://debricked.com/vulnerability/1/repository/2/commit/3/pull-request/generate",
+          "type": "string"
+        }
+      }
+    },
+    "GeneratingPullRequestStatus": {
+      "title": "GeneratingPullRequestStatus",
+      "type": "object",
+      "properties": {
+        "generating": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        }
+      }
+    },
+    "CreateBulkPullRequestPayload": {
+      "title": "CreateBulkPullRequestPayload",
+      "type": "object",
+      "properties": {
+        "commitMessage": {
+          "description": "Commit message to be used",
+          "example": "Bulk fix vulnerabilities",
+          "type": "string"
+        },
+        "notify": {
+          "description": "Should notify owner by email when finished",
+          "type": "boolean"
+        },
+        "includeUnaffected": {
+          "description": "Should include unaffected dependencies",
+          "type": "boolean"
+        }
+      }
+    },
+    "Branch": {
+      "title": "Branch",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "Id of the branch"
+        },
+        "name": {
+          "description": "Name of the branch",
+          "type": "string"
+        },
+        "default": {
+          "description": "If the branch is a default branch or not"
+        }
+      }
+    },
+    "LicenseDataModel": {
+      "title": "LicenseDataModel",
+      "type": "object",
+      "properties": {
+        "spdxIdentifier": {
+          "description": "SPDX license identifier, the license name.",
+          "type": "string"
+        },
+        "licenseId": {
+          "description": "Id of license, can be used to get further data on the license."
+        }
+      }
+    },
+    "DependencyHierarchyStatusModel": {
+      "title": "DependencyHierarchyStatusModel",
+      "type": "object",
+      "properties": {
+        "status": {
+          "description": "Tells if dependency is direct, indirect or both",
+          "type": "string"
+        }
+      }
+    },
+    "RepositoryAndBranchesModel": {
+      "title": "RepositoryAndBranchesModel",
+      "type": "object",
+      "properties": {
+        "repositoryName": {
+          "description": "Name of the repository containing the dependency.",
+          "type": "string"
+        },
+        "repositoryId": {
+          "description": "Id of the repository containing the dependency."
+        },
+        "branches": {
+          "description": "The names and ids of all the branches containing the dependency",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BranchModel"
+          }
+        }
+      }
+    },
+    "DependencyFile": {
+      "title": "DependencyFile",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "File ID",
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Filename",
+          "type": "string"
+        },
+        "url": {
+          "description": "File link",
+          "type": "string"
+        }
+      }
+    },
+    "DependencyTreeFile": {
+      "title": "DependencyTreeFile",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "SelectDependencyDataModel": {
+      "title": "SelectDependencyDataModel",
+      "type": "object",
+      "properties": {
+        "lastPublished": {
+          "description": "Date of the latest published version",
+          "type": "string"
+        },
+        "dependencySummary": {
+          "description": "Brief explaination of the dependency",
+          "type": "string"
+        },
+        "dependency_links": {
+          "$ref": "#/definitions/SelectDependencyLinksModel"
+        },
+        "dependency_topics": {
+          "description": "Topics of the dependency",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selectPage": {
+          "description": "Link to the open source select page",
+          "type": "string"
+        },
+        "packageManager": {
+          "description": "Package manger of the dependency",
+          "type": "string"
+        },
+        "name": {
+          "description": "Dependency name",
+          "type": "string"
+        }
+      }
+    },
+    "SelectDependencyMetricsModel": {
+      "title": "SelectDependencyMetricsModel",
+      "type": "object",
+      "properties": {
+        "popularity": {
+          "description": "Popularity score connected to the dependency"
+        },
+        "contributors": {
+          "description": "Contributors score connected to the dependency"
+        },
+        "security": {
+          "description": "Security score connected to the dependency"
+        }
+      }
+    },
+    "VulnerabilityTimelinesModel": {
+      "title": "VulnerabilityTimelinesModel",
+      "type": "object",
+      "properties": {
+        "timelines": {
+          "description": "Multiple timelines for a given CVE.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VulnerabilityTimelineModel"
+          }
+        }
+      }
+    },
+    "CreatePullRequestPayload": {
+      "title": "CreatePullRequestPayload",
+      "type": "object",
+      "properties": {
+        "commitMessage": {
+          "description": "Commit message to be used",
+          "example": "Fix CVE–2021–44906",
+          "type": "string"
+        },
+        "notify": {
+          "description": "Should notify owner by email when finished",
+          "type": "boolean"
+        }
+      }
+    },
+    "SaveRuleRequest": {
+      "title": "SaveRuleRequest",
+      "type": "object",
+      "properties": {
+        "repository_ids": {
+          "description": "The repository ids to create or edit the rule for",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "rule_ids": {
+          "description": "The rule ids to be edited. Set to null if creating rule.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "conditions": {
+          "description": "The conditions that the rule should consist of.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ConditionModel"
+          }
+        },
+        "fail_pipeline": {
+          "description": "If the triggering of a rule should fail the pipeline or not.",
+          "type": "boolean"
+        },
+        "warn_pipeline": {
+          "description": "If the triggering of a rule should warn the pipeline or not.",
+          "type": "boolean"
+        },
+        "mark_unaffected": {
+          "description": "If the rule should mark the cve the rule triggered for as unaffected.",
+          "type": "boolean"
+        },
+        "mark_vulnerable": {
+          "description": "If the rule should mark the cve the rule triggered for as vulnerable.",
+          "type": "boolean"
+        },
+        "ignore_if_marked_unaffected": {
+          "description": "If the rule should ignore CVEs marked as unaffected when checking rules.",
+          "type": "boolean"
+        },
+        "notify_email_addresses": {
+          "description": "Array of email adresses to notify",
+          "example": [
+            "abc123@gmail.com",
+            "john.doe@outlook.com"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notify_user_groups": {
+          "description": "Array of user groups to notify",
+          "example": [
+            "Users",
+            "Admins"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "description": "If the rule should be created as a default rule or not.",
+          "type": "boolean"
+        },
+        "webhook_url": {
+          "description": "The webhook url to send the result to if rule triggers.",
+          "type": "string"
+        },
+        "webhook_secret": {
+          "description": "The secret for the webhook url.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conditions"
+      ]
+    },
+    "SendSampleWebhookRequest": {
+      "title": "SendSampleWebhookRequest",
+      "type": "object",
+      "properties": {
+        "repositoryIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "ruleIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "webhookUrl": {
+          "type": "string"
+        },
+        "webhookSecret": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repositoryIds",
+        "webhookUrl"
+      ]
+    },
+    "SendSampleWebhookResponseModel": {
+      "title": "SendSampleWebhookResponseModel",
+      "type": "object",
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleDataRequest": {
+      "title": "RuleDataRequest",
+      "type": "object",
+      "properties": {
+        "repository_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "rule_ids": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "locale": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "repository_ids"
+      ]
+    },
+    "RuleDataResponse": {
+      "title": "RuleDataResponse",
+      "type": "object",
+      "properties": {
+        "desc": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ConditionModel2"
+          }
+        },
+        "failPipeline": {
+          "type": "boolean"
+        },
+        "warnPipeline": {
+          "type": "boolean"
+        },
+        "markUnaffected": {
+          "type": "boolean"
+        },
+        "markVulnerable": {
+          "type": "boolean"
+        },
+        "ignoreIfMarkedUnaffected": {
+          "type": "boolean"
+        },
+        "notifyEmailAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notifyUserGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "webhookUrl": {
+          "type": "string"
+        },
+        "webhookSecret": {
+          "type": "string"
+        },
+        "branchOptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "emailAddressOptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EmailAddressOption"
+          }
+        },
+        "licenseOptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "licenseFamilyNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "licenseRiskOptions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LicenseRiskOption"
+          }
+        }
+      }
+    },
+    "GenerateRuleRequest": {
+      "title": "GenerateRuleRequest",
+      "type": "object",
+      "properties": {
+        "repository_ids": {
+          "description": "The repository ids to create or edit the rule for",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "rule_ids": {
+          "description": "The rule ids to be edited. Set to null if creating rule.",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "conditions": {
+          "description": "The conditions that the rule should consist of.",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ConditionModel"
+          }
+        },
+        "fail_pipeline": {
+          "description": "If the triggering of a rule should fail the pipeline or not.",
+          "type": "boolean"
+        },
+        "warn_pipeline": {
+          "description": "If the triggering of a rule should warn the pipeline or not.",
+          "type": "boolean"
+        },
+        "mark_unaffected": {
+          "description": "If the rule should mark the cve the rule triggered for as unaffected.",
+          "type": "boolean"
+        },
+        "mark_vulnerable": {
+          "description": "If the rule should mark the cve the rule triggered for as vulnerable.",
+          "type": "boolean"
+        },
+        "ignore_if_marked_unaffected": {
+          "description": "If the rule should ignore CVEs marked as unaffected when checking rules.",
+          "type": "boolean"
+        },
+        "notify_email_addresses": {
+          "description": "Array of email adresses to notify",
+          "example": [
+            "abc123@gmail.com",
+            "john.doe@outlook.com"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notify_user_groups": {
+          "description": "Array of user groups to notify",
+          "example": [
+            "Users",
+            "Admins"
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default": {
+          "description": "If the rule should be created as a default rule or not.",
+          "type": "boolean"
+        },
+        "webhook_url": {
+          "description": "The webhook url to send the result to if rule triggers.",
+          "type": "string"
+        },
+        "webhook_secret": {
+          "description": "The secret for the webhook url.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "conditions"
+      ]
+    },
+    "GenerateRuleResponse": {
+      "title": "GenerateRuleResponse",
+      "type": "object",
+      "properties": {
+        "warnings": {
+          "description": "Warnings to be beware of if activating this rule",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/GenerateRuleWarningsModel"
+          }
+        },
+        "description": {
+          "description": "The description of the successfully generated rule",
+          "type": "string"
+        },
+        "invalidWebhookUrl": {
+          "description": "If the provided webhook url was invalid or not.",
+          "type": "boolean"
+        },
+        "errorConditionText": {
+          "description": "If the provided webhook url was invalid or not.",
+          "type": "string"
+        },
+        "errorConditionIndex": {
+          "description": "If the provided webhook url was invalid or not.",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "GetRulesResponse": {
+      "title": "GetRulesResponse",
+      "type": "object",
+      "properties": {
+        "ruleGroups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RuleGroupModel"
+          }
+        },
+        "totalRules": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "isBitbucketIntegration": {
+          "type": "boolean"
+        }
+      }
+    },
+    "RulesRequest": {
+      "title": "RulesRequest",
+      "type": "object",
+      "properties": {
+        "ruleIds": {
+          "description": "Automation rule IDs",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "SetActiveRequest": {
+      "title": "SetActiveRequest",
+      "type": "object",
+      "properties": {
+        "ruleIds": {
+          "description": "Automation rule IDs",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "active": {
+          "description": "activate/deactivate rules",
+          "type": "boolean"
+        }
+      }
+    },
+    "BranchModel": {
+      "title": "BranchModel",
+      "type": "object",
+      "properties": {
+        "branchName": {
+          "description": "Name of the branch containing the dependency.",
+          "type": "string"
+        },
+        "branchId": {
+          "description": "Id of the branch containing the dependency."
+        }
+      }
+    },
+    "SelectDependencyLinksModel": {
+      "title": "SelectDependencyLinksModel",
+      "type": "object",
+      "properties": {
+        "homePage": {
+          "description": "Home page url of the dependency",
+          "type": "string"
+        },
+        "packageUrl": {
+          "description": "Package manager url",
+          "type": "string"
+        },
+        "docsUrl": {
+          "description": "Documentation url",
+          "type": "string"
+        },
+        "repositoryUrl": {
+          "description": "Repository url",
+          "type": "string"
+        }
+      }
+    },
+    "VulnerabilityTimelineModel": {
+      "title": "VulnerabilityTimelineModel",
+      "type": "object",
+      "properties": {
+        "dependencies": {
+          "description": "Details about dependencies with the given timeline",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/DependencyDetailsDataModel"
+          }
+        },
+        "intervals": {
+          "description": "Version intervals composing the timeline",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/VulnerabilityTimelineIntervalModel"
+          }
+        }
+      }
+    },
+    "ConditionModel": {
+      "title": "ConditionModel",
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Subject"
+            },
+            {
+              "description": "The type of object the rule checks"
+            }
+          ]
+        },
+        "op": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Op"
+            },
+            {
+              "description": "The operation to perform when checking the condition."
+            }
+          ]
+        },
+        "value": {
+          "description": "The operation to perform when checking the condition.",
+          "example": [
+            [
+              "untriggered_vulnerability",
+              "untriggered_dependency",
+              "untriggered_vulnerability_in_dependency",
+              "low",
+              "medium",
+              "high",
+              "critical",
+              "missing",
+              "new",
+              "existing",
+              "vulnerable"
+            ]
+          ],
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "conj": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Conj"
+            },
+            {
+              "description": "The conjunction to perform with a previous condition."
+            }
+          ]
+        }
+      },
+      "required": [
+        "subject",
+        "op"
+      ]
+    },
+    "ConditionModel2": {
+      "title": "ConditionModel2",
+      "type": "object",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "op": {
+          "type": "string"
+        },
+        "conj": {
+          "type": "string"
+        }
+      }
+    },
+    "GenerateRuleWarningsModel": {
+      "title": "GenerateRuleWarningsModel",
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        },
+        "rule_ids": {
+          "type": "string"
+        }
+      }
+    },
+    "RuleGroupModel": {
+      "title": "RuleGroupModel",
+      "type": "object",
+      "properties": {
+        "repositoryIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "ruleIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "defaultRuleIds": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "desc": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "updatedAt": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "updatedBy": {
+          "type": "string"
+        },
+        "updatedType": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "DependencyDetailsDataModel": {
+      "title": "DependencyDetailsDataModel",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "short_name": {
+          "type": "string"
+        },
+        "link": {
+          "type": "string"
+        }
+      }
+    },
+    "VulnerabilityTimelineIntervalModel": {
+      "title": "VulnerabilityTimelineIntervalModel",
+      "type": "object",
+      "properties": {
+        "vulnerable": {
+          "type": "boolean"
+        },
+        "start_version": {
+          "type": "string"
+        },
+        "end_version": {
+          "type": "string"
+        }
+      }
+    },
+    "AccessTokensRequest": {
+      "title": "AccessTokensRequest",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "roles": {
+          "description": "Array of access scope IDs. Get ID of scopes from /open/admin/user/options",
+          "example": [
+            4,
+            6
+          ],
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "AccessTokensResponse": {
+      "title": "AccessTokensResponse",
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "accessScopes": {
+          "description": "Comma space separated list of access scopes",
+          "example": "API, Paid API",
+          "type": "string"
+        },
+        "tokenId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "AccessTokensResponse1": {
+      "title": "AccessTokensResponse1",
+      "type": "object",
+      "properties": {
+        "token": {
+          "description": "The added token",
+          "type": "string"
+        }
+      }
+    },
+    "AdminRequestLogsGetEventsResponse": {
+      "title": "AdminRequestLogsGetEventsResponse",
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "example": 2,
+          "type": "integer",
+          "format": "int32"
+        },
+        "eventName": {
+          "example": "Created pull request",
+          "type": "string"
+        }
+      }
+    },
+    "AdminRequestLogsGetRequestLogsResponse": {
+      "title": "AdminRequestLogsGetRequestLogsResponse",
+      "type": "object",
+      "properties": {
+        "page": {
+          "example": 1,
+          "type": "integer",
+          "format": "int32"
+        },
+        "found": {
+          "description": "Amount of logs returned",
+          "example": 1,
+          "type": "integer",
+          "format": "int32"
+        },
+        "requestLogs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RequestLogSample"
+          }
+        }
+      }
+    },
+    "AdminUserDefaultRulesEnabledRequest": {
+      "title": "AdminUserDefaultRulesEnabledRequest",
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "description": "Value of default_rules_enabled which will be set.",
+          "type": "boolean"
+        }
+      }
+    },
+    "AutomationsDeleteRulesResponse": {
+      "title": "AutomationsDeleteRulesResponse",
+      "type": "object",
+      "properties": {
+        "deletedCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "AutomationsGetRulesRequest": {
+      "title": "AutomationsGetRulesRequest",
+      "type": "object",
+      "properties": {
+        "page": {
+          "type": "integer",
+          "default": 1,
+          "format": "int32"
+        },
+        "rulesPerPage": {
+          "description": "Amount of automations to return",
+          "type": "integer",
+          "default": 25,
+          "format": "int32"
+        },
+        "search": {
+          "description": "Search by rule description",
+          "type": "string",
+          "maxLength": 255
+        },
+        "repositoryIds": {
+          "description": "Repository IDs",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "filters": {
+          "description": "Filters",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "AutomationsMakeDefaultRequest": {
+      "title": "AutomationsMakeDefaultRequest",
+      "type": "object",
+      "properties": {
+        "ruleIds": {
+          "description": "Array of rule ids to add default for",
+          "example": [
+            4,
+            6
+          ],
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "repositoryIds": {
+          "description": "Array of repository ids to add default for",
+          "example": [
+            4,
+            6
+          ],
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "AutomationsRulesCountResponse": {
+      "title": "AutomationsRulesCountResponse",
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "AutomationsSetActiveResponse": {
+      "title": "AutomationsSetActiveResponse",
+      "type": "object",
+      "properties": {
+        "editedCount": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Breadcrumb": {
+      "title": "Breadcrumb",
+      "type": "object",
+      "properties": {
+        "url": {
+          "example": "/app/en/repositories",
+          "type": "string"
+        },
+        "text": {
+          "example": "Repositories",
+          "type": "string"
+        }
+      }
+    },
+    "Conj": {
+      "title": "Conj",
+      "description": "The conjunction to perform with a previous condition.",
+      "type": "string",
+      "enum": [
+        "and",
+        "or"
+      ]
+    },
+    "DefaultAutomationsDeleteRequest": {
+      "title": "DefaultAutomationsDeleteRequest",
+      "type": "object",
+      "properties": {
+        "defaultRuleIds": {
+          "description": "Array of default rule ids to delete",
+          "example": [
+            4,
+            6
+          ],
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "EmailAddressOption": {
+      "title": "EmailAddressOption",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "groups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "includeUnaffected": {
+      "title": "includeUnaffected",
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        "1",
+        "0"
+      ]
+    },
+    "LicenseRiskOption": {
+      "title": "LicenseRiskOption",
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "tooltip": {
+          "type": "string"
+        }
+      }
+    },
+    "notify": {
+      "title": "notify",
+      "type": "integer",
+      "format": "int32",
+      "enum": [
+        "1",
+        "0"
+      ]
+    },
+    "Op": {
+      "title": "Op",
+      "description": "The operation to perform when checking the condition.",
+      "type": "string",
+      "enum": [
+        "is",
+        "less",
+        "greater",
+        "is_not",
+        "untriggered"
+      ]
+    },
+    "order": {
+      "title": "order",
+      "type": "string",
+      "enum": [
+        "asc",
+        "desc"
+      ]
+    },
+    "Organization": {
+      "title": "Organization",
+      "type": "object",
+      "properties": {
+        "name": {
+          "example": "AmazingCompany",
+          "type": "string"
+        },
+        "githubId": {
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "Reference": {
+      "title": "Reference",
+      "type": "object",
+      "properties": {
+        "link": {
+          "example": "https://nvd.nist.gov/vuln/detail/CVE-2021-26691",
+          "type": "string"
+        },
+        "title": {
+          "example": "CVE-2021-26691",
+          "type": "string"
+        },
+        "domain": {
+          "example": "nvd.nist.gov",
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "Repository": {
+      "title": "Repository",
+      "type": "object",
+      "properties": {
+        "name": {
+          "example": "ExampleRepo",
+          "type": "string"
+        },
+        "type": {
+          "example": "unaffected",
+          "type": "string"
+        },
+        "link": {
+          "example": "https://debricked.com/app/en/vulnerability/6551?repositoryId=1",
+          "type": "string"
+        }
+      }
+    },
+    "RepositoryGroupsDeleteGroupRequest": {
+      "title": "RepositoryGroupsDeleteGroupRequest",
+      "type": "object",
+      "properties": {
+        "group": {
+          "description": "ID of the group to be deleted",
+          "example": 1,
+          "type": "integer",
+          "format": "int32"
+        },
+        "parent": {
+          "description": "ID of the parent of the current groups, this is needed as groups can have multiple parents.",
+          "example": "/",
+          "type": "string"
+        }
+      }
+    },
+    "RepositoryGroupsEditGroupRequest": {
+      "title": "RepositoryGroupsEditGroupRequest",
+      "type": "object",
+      "properties": {
+        "group": {
+          "description": "ID of the group to be edited",
+          "example": 1,
+          "type": "integer",
+          "format": "int32"
+        },
+        "name": {
+          "description": "Name of the group",
+          "example": "FrontendTeam",
+          "type": "string"
+        },
+        "products": {
+          "description": "Array of repository IDs to be included in the group",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "groups": {
+          "description": "Array of subgroup IDs to be included in the group",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    },
+    "RepositoryGroupsNewGroupRequest": {
+      "title": "RepositoryGroupsNewGroupRequest",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "New unique name for the group",
+          "example": "FrontendTeam",
+          "type": "string"
+        },
+        "products": {
+          "description": "Array of repository IDs to be included in the group",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "groups": {
+          "description": "Array of subgroup IDs to be included in the group",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "current": {
+          "description": "Decides where the group will be placed. To place it within an existing group, use the id of that group, otherwise use '/' to add it to the root level",
+          "example": "1",
+          "type": "string"
+        }
+      }
+    },
+    "RepositoryPullRequestAddCredentialsRequest": {
+      "title": "RepositoryPullRequestAddCredentialsRequest",
+      "type": "object",
+      "properties": {
+        "host": {
+          "description": "Host of SCM instance (Gitlab, Azure)",
+          "example": "https://<company>.gitlab.com, https://dev.azure.com/<company> etc.",
+          "type": "string"
+        },
+        "privateToken": {
+          "description": "Token used to authenticate to perform pull request on SCM instance",
+          "example": "your_access_token",
+          "type": "string"
+        }
+      }
+    },
+    "RepositorySettingsAvailableUseCasesResponse": {
+      "title": "RepositorySettingsAvailableUseCasesResponse",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+    "RepositorySettingsRepositoriesRenameRequest": {
+      "title": "RepositorySettingsRepositoriesRenameRequest",
+      "type": "object",
+      "properties": {
+        "newRepositoryName": {
+          "description": "The new name.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "newRepositoryName"
+      ]
+    },
+    "RepositorySettingsRepositoriesSelectUseCaseRequest": {
+      "title": "RepositorySettingsRepositoriesSelectUseCaseRequest",
+      "type": "object",
+      "properties": {
+        "useCase": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "useCase"
+      ]
+    },
+    "SbomGenerateCyclonedxSbomResponse": {
+      "title": "SbomGenerateCyclonedxSbomResponse",
+      "type": "object",
+      "properties": {
+        "message": {
+          "description": "Information on how to get the report after generation is finished.",
+          "example": "The report has started generating and will be sent to your email once ready. Be aware that it might take some time before it's finished. It is also possible to download the SBOM through the 'download-generated-cyclonedx-sbom' endpoint, by using the reportUuId stated below. ",
+          "type": "string"
+        },
+        "reportUuid": {
+          "description": "Generated report uuid. It's used to download the SBOM report once it's been generated.",
+          "example": "c1154db9-33e2-43c4-80cb-137d7ccf6a62",
+          "type": "string"
+        },
+        "notes": {
+          "description": "Specifies notes to consider once the generation has begun. For example if certain parameters are ignored due to conflicts.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "sortColumn": {
+      "title": "sortColumn",
+      "type": "string",
+      "enum": [
+        "email",
+        "firstName",
+        "lastName",
+        "userStatus",
+        "userRoles"
+      ]
+    },
+    "sortColumn1": {
+      "title": "sortColumn1",
+      "type": "string",
+      "enum": [
+        "name",
+        "automations",
+        "useCase",
+        "integration",
+        "scanningEnabled",
+        "showHardwareDependencies"
+      ]
+    },
+    "sortColumn2": {
+      "title": "sortColumn2",
+      "type": "string",
+      "enum": [
+        "name",
+        "commitDate",
+        "repository",
+        "branch",
+        "author"
+      ]
+    },
+    "sortColumn3": {
+      "title": "sortColumn3",
+      "type": "string",
+      "enum": [
+        "part",
+        "vendor",
+        "product",
+        "version",
+        "update",
+        "cpeId"
+      ]
+    },
+    "sortColumn4": {
+      "title": "sortColumn4",
+      "type": "string",
+      "enum": [
+        "name",
+        "totalVulnerabilities",
+        "vulnerabilitiesWithExploits"
+      ]
+    },
+    "sortColumn5": {
+      "title": "sortColumn5",
+      "type": "string",
+      "enum": [
+        "name",
+        "releaseDate",
+        "totalVulnerabilities",
+        "vulnerabilitiesWithExploits",
+        "author"
+      ]
+    },
+    "sortColumn6": {
+      "title": "sortColumn6",
+      "type": "string",
+      "enum": [
+        "name",
+        "totalVulnerabilities",
+        "licenses"
+      ]
+    },
+    "sortColumn7": {
+      "title": "sortColumn7",
+      "type": "string",
+      "enum": [
+        "name",
+        "discovered",
+        "cvss"
+      ]
+    },
+    "sortColumn8": {
+      "title": "sortColumn8",
+      "type": "string",
+      "enum": [
+        "description",
+        "created",
+        "accessScopes"
+      ]
+    },
+    "sortColumn9": {
+      "title": "sortColumn9",
+      "type": "string",
+      "enum": [
+        "name",
+        "repositories",
+        "dependenciesCount",
+        "licenseFamily"
+      ]
+    },
+    "sortColumn10": {
+      "title": "sortColumn10",
+      "type": "string",
+      "enum": [
+        "name",
+        "licenseRisk",
+        "dependencyCount"
+      ]
+    },
+    "Subject": {
+      "title": "Subject",
+      "description": "The type of object the rule checks",
+      "type": "string",
+      "enum": [
+        "vulnerability",
+        "dependency",
+        "branch",
+        "cvss",
+        "rule",
+        "license",
+        "licenseFamily",
+        "licenseRisk",
+        "vulnerabilityDiscoveredDate",
+        "securityScore"
+      ]
+    },
+    "UserPermissionsResponse": {
+      "title": "UserPermissionsResponse",
+      "type": "object",
+      "properties": {
+        "githubOauthAllowed": {
+          "type": "boolean"
+        },
+        "enforceUnaffectedComment": {
+          "type": "boolean"
+        },
+        "allowSnooze": {
+          "type": "boolean"
+        },
+        "organizations": {
+          "description": "List of github organizations",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Organization"
+          }
+        },
+        "whitelist": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "UserPermissionsSetEmailWhitelistRequest": {
+      "title": "UserPermissionsSetEmailWhitelistRequest",
+      "type": "object",
+      "properties": {
+        "emailDomains": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "UserPermissionsToggleAllowSnoozeRequest": {
+      "title": "UserPermissionsToggleAllowSnoozeRequest",
+      "type": "object",
+      "properties": {
+        "allowSnooze": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UserPermissionsToggleEnforceCommentRequest": {
+      "title": "UserPermissionsToggleEnforceCommentRequest",
+      "type": "object",
+      "properties": {
+        "enforceUnaffectedComment": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UserPermissionsToggleGithubOauthRequest": {
+      "title": "UserPermissionsToggleGithubOauthRequest",
+      "type": "object",
+      "properties": {
+        "githubOauthAllowed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "VulnerabilityReferencesResponse": {
+      "title": "VulnerabilityReferencesResponse",
+      "type": "object",
+      "properties": {
+        "references": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Reference"
+          }
+        }
+      }
+    },
+    "VulnerabilityReviewStatusResponse": {
+      "title": "VulnerabilityReviewStatusResponse",
+      "type": "object",
+      "properties": {
+        "repositories": {
+          "description": "The id of the repository in question",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Repository"
+          }
+        },
+        "enforceComment": {
+          "description": "If providing a comment is mandatory to change the remediation status",
+          "example": false,
+          "type": "boolean"
+        },
+        "oldComment": {
+          "description": "Previous comment related to a change in remediation status",
+          "type": "string"
+        },
+        "oldCommentAutho": {
+          "description": "User which wrote the previous comment",
+          "type": "string"
+        },
+        "commentMinLength": {
+          "description": "Minimum length necessary to provide a comment",
+          "example": 10,
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "VulnerabilitySetReviewStatusRequest": {
+      "title": "VulnerabilitySetReviewStatusRequest",
+      "type": "object",
+      "properties": {
+        "repoId": {
+          "description": "The id of the repository in question",
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "description": "Review status to be set: 'unaffected', 'vulnerable', 'remediated' or 'unexamined'",
+          "example": "vulnerable",
+          "type": "string"
+        },
+        "comment": {
+          "description": "Comment justifying the review status",
+          "example": "Comment justifying the review status",
+          "type": "string"
+        }
+      }
+    },
+    "VulnerabilityStatus": {
+      "title": "VulnerabilityStatus",
+      "type": "string",
+      "enum": [
+        "unaffected",
+        "vulnerable",
+        "remediated",
+        "unexamined",
+        "paused",
+        "snoozed"
+      ]
+    }
+  },
+  "security": [
+    {
+      "JWT": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Dependency files management",
+      "description": ""
+    },
+    {
+      "name": "CycloneDX SBOM",
+      "description": ""
+    },
+    {
+      "name": "Admin",
+      "description": ""
+    },
+    {
+      "name": "Repository settings",
+      "description": ""
+    },
+    {
+      "name": "Scan",
+      "description": ""
+    },
+    {
+      "name": "Repositories",
+      "description": ""
+    },
+    {
+      "name": "Repository",
+      "description": ""
+    },
+    {
+      "name": "Commits",
+      "description": ""
+    },
+    {
+      "name": "Dependencies",
+      "description": ""
+    },
+    {
+      "name": "Dependency",
+      "description": ""
+    },
+    {
+      "name": "Vulnerabilities",
+      "description": ""
+    },
+    {
+      "name": "Vulnerability",
+      "description": ""
+    },
+    {
+      "name": "Repository groups",
+      "description": ""
+    },
+    {
+      "name": "Access tokens",
+      "description": ""
+    },
+    {
+      "name": "Automations",
+      "description": ""
+    },
+    {
+      "name": "User profile",
+      "description": ""
+    },
+    {
+      "name": "Licenses",
+      "description": ""
+    },
+    {
+      "name": "License",
+      "description": ""
+    },
+    {
+      "name": "Overview",
+      "description": ""
+    }
+  ]
+}
