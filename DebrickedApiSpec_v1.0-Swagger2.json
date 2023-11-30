@@ -383,7 +383,7 @@
           "Admin",
           "Request logging"
         ],
-        "operationId": "get-events",
+        "operationId": "list-events",
         "deprecated": false,
         "produces": [
           "application/json"
@@ -392,13 +392,6 @@
         "responses": {
           "200": {
             "description": "Returned when successfully fetched all the events",
-            "schema": {
-              "type": "array",
-              "default": "",
-              "items": {
-                "$ref": "#/definitions/AdminRequestLogsGetEventsResponse"
-              }
-            },
             "headers": {}
           },
           "401": {
@@ -528,7 +521,7 @@
     
     "/repository-settings/available-use-cases": {
       "get": {
-        "description": "",
+        "description": "Get a list of all available use cases and their IDs.",
         "summary": "Get a list of all available use cases and their IDs.",
         "tags": [
           "Repository settings"
@@ -542,13 +535,6 @@
         "responses": {
           "200": {
             "description": "Returned when successful",
-            "schema": {
-              "type": "array",
-              "default": "",
-              "items": {
-                "$ref": "#/definitions/RepositorySettingsAvailableUseCasesResponse"
-              }
-            },
             "headers": {}
           },
           "401": {
