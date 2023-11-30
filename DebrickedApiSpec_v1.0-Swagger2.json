@@ -108,7 +108,7 @@
         }
       }
     },
-    
+
     "/admin/user/options": {
       "get": {
         "description": "",
@@ -345,39 +345,6 @@
           },
           "401": {
             "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      }
-    },
-    "/user-permissions/": {
-      "get": {
-        "description": "",
-        "summary": "Get the current user permissions configuration",
-        "tags": [
-          "Admin",
-          "User permissions"
-        ],
-        "operationId": "get-current-user-permissions-configuration",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returned when successfully fetched the user permissions",
-            "schema": {
-              "$ref": "#/definitions/UserPermissionsResponse"
-            },
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
             "headers": {}
           }
         }
