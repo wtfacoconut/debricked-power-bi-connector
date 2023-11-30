@@ -67,7 +67,7 @@
           {
             "name": "ciUploadId",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string",
             "pattern": "\\d+",
             "description": ""
