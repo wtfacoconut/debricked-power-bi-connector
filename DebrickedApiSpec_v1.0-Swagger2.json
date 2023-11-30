@@ -2806,48 +2806,7 @@
         }
       }
     },
-    "/repository-groups/get-current-groups": {
-      "get": {
-        "description": "",
-        "summary": "Get information about the sub-groups contained in the current group",
-        "tags": [
-          "Repository groups"
-        ],
-        "operationId": "list-repository-groups-current-groups",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "current",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32",
-            "description": "ID of the current group, defaults to '/' which is the root level"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returned when successfully fetched all the subgroups",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "404": {
-            "description": "Returned when the current group is not found",
-            "headers": {}
-          }
-        }
-      }
-    },
+    
     "/repository-groups/get-repositories": {
       "get": {
         "description": "",
