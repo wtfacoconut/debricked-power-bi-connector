@@ -108,36 +108,6 @@
         }
       }
     },
-
-    "/admin/user/options": {
-      "get": {
-        "description": "",
-        "summary": "Get list of options which can be used when adding/editing users.",
-        "tags": [
-          "Admin"
-        ],
-        "operationId": "list-admin-user-options",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returned when successful, a JSON encoded array consisting of user options.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      }
-    },
     
     "/admin/user/default-rules-enabled": {
       "get": {
