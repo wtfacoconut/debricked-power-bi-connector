@@ -108,31 +108,7 @@
         }
       }
     },
-    
-    "/admin/user/default-rules-enabled": {
-      "get": {
-        "description": "",
-        "summary": "Get settings `default rules enabled`",
-        "tags": [
-          "Admin"
-        ],
-        "operationId": "list-settings-default-rules-enabled",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Returns value of settings `default rules enabled`.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      },
+
       "patch": {
         "description": "",
         "summary": "Edit value `default rules enabled` for the current user.",
@@ -319,91 +295,7 @@
           }
         }
       }
-    },
-
-    "/repository-settings/commits": {
-      "get": {
-        "description": "",
-        "summary": "Get a list of your commits.",
-        "tags": [
-          "Repository settings"
-        ],
-        "operationId": "list-repository-commit-settings",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "page",
-            "in": "query",
-            "required": false,
-            "default": 1,
-            "type": "integer",
-            "format": "int32",
-            "description": "Which page to show results for, starting at 1"
-          },
-          {
-            "name": "rowsPerPage",
-            "in": "query",
-            "required": false,
-            "default": 25,
-            "type": "integer",
-            "format": "int32",
-            "description": "Amount of rows per page"
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "pattern": ".+",
-            "description": "Search by name or repository"
-          },
-          {
-            "name": "sortColumn",
-            "in": "query",
-            "required": false,
-            "enum": [
-              "name",
-              "commitDate",
-              "repository",
-              "branch",
-              "author"
-            ],
-            "type": "string",
-            "pattern": ".+",
-            "description": "Which column to sort result by"
-          },
-          {
-            "name": "order",
-            "in": "query",
-            "required": false,
-            "enum": [
-              "asc",
-              "desc"
-            ],
-            "type": "string",
-            "pattern": ".+",
-            "description": "Sorting order, asc or desc"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returned when successful.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      }
-    },   
+    },  
     
     "/repository-settings/available-use-cases": {
       "get": {
