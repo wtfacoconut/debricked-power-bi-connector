@@ -3293,75 +3293,7 @@
         }
       }
     },
-    "/overview/snapshots": {
-      "get": {
-        "description": "",
-        "summary": "Gets the snapshots in the last timeFrame nr of timeScale, for instance the last 3 days, or in the last 5 months etc.",
-        "tags": [
-          "Overview"
-        ],
-        "operationId": "list-snapshots",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "repositoryId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32",
-            "description": "Repository ID. If empty will check all repositories."
-          },
-          {
-            "name": "timeFrame",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32",
-            "description": "The number of timeScales back to search"
-          },
-          {
-            "name": "timeScale",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "pattern": ".+",
-            "description": "The scale to search backwards for"
-          },
-          {
-            "name": "branchId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32",
-            "description": "The id of the branch to check. If empty will check the default branch"
-          },
-          {
-            "name": "excludeManualUploads",
-            "in": "query",
-            "required": false,
-            "type": "boolean",
-            "description": "The id of the branch to check. If empty will check the default branch"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returned when successful.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      }
-    },
+    
     "/overview/vulnerabilities-fixed": {
       "get": {
         "description": "",
