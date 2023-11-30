@@ -109,57 +109,6 @@
       }
     },
     
-    "/sbom/download-generated-cyclonedx-sbom": {
-      "get": {
-        "description": "",
-        "summary": "Download result of generated CycloneDX SBOM, or get a status response is not yet complete",
-        "tags": [
-          "CycloneDX SBOM"
-        ],
-        "operationId": "download-generated-cyclonedx-sbom",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "reportUuid",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "pattern": ".*",
-            "description": ""
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returned when complete. Response contains a JSON-encoded SBOM with requested data populated matching all its components.",
-            "headers": {}
-          },
-          "202": {
-            "description": "Returned when not complete.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "403": {
-            "description": "Returned when you do not have access to current operation",
-            "headers": {}
-          },
-          "410": {
-            "description": "This response is sent when the requested content has been permanently deleted from server, with no forwarding address.",
-            "headers": {}
-          }
-        }
-      }
-    },
-    
     "/admin/user/options": {
       "get": {
         "description": "",
