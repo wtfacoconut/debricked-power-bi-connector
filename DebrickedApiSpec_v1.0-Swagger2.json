@@ -776,56 +776,7 @@
         }
       }
     },
-    "/repository/{repositoryId}/set-default-branch": {
-      "get": {
-        "description": "",
-        "summary": "Set the provided branch as default for a given repository",
-        "tags": [
-          "Repository"
-        ],
-        "operationId": "set-repository-default-branch",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "repositoryId",
-            "in": "path",
-            "required": true,
-            "type": "integer",
-            "format": "int32",
-            "description": "The ID of the repository in question"
-          },
-          {
-            "name": "branchId",
-            "in": "query",
-            "required": false,
-            "type": "integer",
-            "format": "int32",
-            "description": "The ID of the new default branch to set"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Returned when successfully changed default branch",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "404": {
-            "description": "Returned when repository is not found",
-            "headers": {}
-          }
-        }
-      }
-    },
+
     "/repository/{repositoryId}/branch/{branchId}/get-pr-status": {
       "get": {
         "description": "",
