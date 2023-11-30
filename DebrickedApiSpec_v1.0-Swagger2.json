@@ -1654,7 +1654,7 @@
     "/select-data/dependency-data/{dependencyId}": {
       "get": {
         "description": "",
-        "summary": "Get open source select data relevant to the dependency",
+        "summary": "Get open source select data relevant to the dependency. Note, as of 01/12/2023 it appears this endpoint will return 500 if it's unable to find the dependencyId.",
         "tags": [
           "Dependency"
         ],
