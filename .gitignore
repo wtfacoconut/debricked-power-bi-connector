@@ -1,2 +1,3 @@
 *.mez
 **/.vscode
+bin/
