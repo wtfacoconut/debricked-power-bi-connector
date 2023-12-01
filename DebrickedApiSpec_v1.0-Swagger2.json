@@ -108,59 +108,6 @@
         }
       }
     },
-
-      "patch": {
-        "description": "",
-        "summary": "Edit value `default rules enabled` for the current user.",
-        "tags": [
-          "Admin"
-        ],
-        "operationId": "Editvalue`defaultrulesenabled`forthecurrentuser.",
-        "deprecated": false,
-        "produces": [
-          "application/json"
-        ],
-        "consumes": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "Content-Type",
-            "in": "header",
-            "required": false,
-            "enum": [
-              "application/json"
-            ],
-            "type": "string",
-            "description": ""
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": false,
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/AdminUserDefaultRulesEnabledRequest"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Returned when successfully edited user.",
-            "headers": {}
-          },
-          "400": {
-            "description": "Returned when required data is missing or given data is invalid. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          },
-          "401": {
-            "description": "Returned when authorisation fails, such as missing JWT-token, insufficient privileges or expired JWT-token. Look at the response body's message to know exactly what went wrong.",
-            "headers": {}
-          }
-        }
-      }
-    },
-    
     "/admin/request-logs/get-request-logs": {
       "get": {
         "description": "",
@@ -295,8 +242,7 @@
           }
         }
       }
-    },  
-    
+    },
     "/repository-settings/available-use-cases": {
       "get": {
         "description": "Get a list of all available use cases and their IDs.",
@@ -407,7 +353,6 @@
         }
       }
     },
-    
     "/repository-settings/repositories/{repositoryId}/enable-app-scanning/{enableScanning}": {
       "patch": {
         "description": "",
@@ -776,7 +721,6 @@
         }
       }
     },
-
     "/repository/{repositoryId}/branch/{branchId}/get-pr-status": {
       "get": {
         "description": "",
@@ -877,8 +821,6 @@
         }
       }
     },
-    
-    
     "/repository/{repositoryId}/get-branches": {
       "get": {
         "description": "",
@@ -2018,7 +1960,6 @@
         }
       }
     },
-    
     "/vulnerability/{vulnerabilityId}/pause-status": {
       "get": {
         "description": "",
@@ -2676,7 +2617,6 @@
         }
       }
     },
-      
     "/vulnerability/{vulnerabilityId}/pullrequest/{commitId}/receiptdata": {
       "get": {
         "description": "",
@@ -2806,7 +2746,6 @@
         }
       }
     },
-    
     "/repository-groups/get-repositories": {
       "get": {
         "description": "",
@@ -2848,10 +2787,7 @@
           }
         }
       }
-    },
-      
-      
-      
+    },  
     "/access-tokens/": {
       "get": {
         "description": "",
@@ -2934,8 +2870,7 @@
           }
         }
       }
-    },
-    
+    },   
     "/automations/rules-count": {
       "get": {
         "description": "",
@@ -2979,8 +2914,7 @@
           }
         }
       }
-    },
-    
+    },    
     "/user-profile/is-admin": {
       "get": {
         "description": "",
@@ -3293,7 +3227,6 @@
         }
       }
     },
-    
     "/overview/vulnerabilities-fixed": {
       "get": {
         "description": "",
