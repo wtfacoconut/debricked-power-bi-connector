@@ -26,13 +26,9 @@ GetDebrickedBearerToken = () as text =>
 // Retrieve the APIs for a specific FoD instance
 GetDebrickedInstance = () as table =>
     let
-        //debrickedApiUrl = "https://debricked.com/api/doc/open.json",
         headers = [ 
             #"Authorization" = "Bearer " & GetDebrickedBearerToken()
         ],
-        
-        // Pulling the OpenAPI definition file directly from the website. (Note: The json is pretty dirty, so will probably need to used an embedded json file instead.)
-        //asNav = OpenApi.Document(Web.Contents(debrickedApiUrl), [ Headers = headers, ManualCredentials = true, IncludeMoreColumns = true, IncludeExtensions = true ])，
 
         // Using an embeded, modified, OpenAPI json
         embededApiSpecJson = Extension.Contents("DebrickedApiSpec_v1.0-Swagger2.json"),
@@ -57,8 +53,6 @@ shared debrickedPowerBiConnector.SaaS = () =>
 debrickedPowerBiConnector = [
     Authentication = [
         // UsernamePassword = [],
-        // Windows = [],
-        //Anonymous = [],
         Key = [
             KeyLabel = Extension.LoadString("debricked_keyLabel"),
             Label = Extension.LoadString("debricked_authKindLabel")
